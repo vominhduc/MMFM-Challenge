@@ -77,11 +77,11 @@ Then, depending on the selection, we use the corresponding expert to generate th
 
 - If the task is not counting (in most cases, LLaVA also outputs the answer): we select the answer based on the consensus among 3 experts (at least 2/3 experts have the same answers). If no consensus, we will randomly choose between the non-counting expert and  the general expert since the counting expert is tailored only for the counting task.
 
-###Train experts
+### Train experts
 
 We follow the authors to fine-tune LLaVA 1.5 13B instruction-tuned with LLAVA instruction-tuning data for each expert.
 
-###Evaluation
+### Evaluation
 
 run  `bash evaluate_phase_1_4_datasets.sh `  to generate answers for 4 datasets in phase 1
 
