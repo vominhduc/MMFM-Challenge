@@ -77,16 +77,17 @@ def conv2sample(args, convs, id, ds, image, _shots=None, load_image=True):
         for jj in range(2, 8):
             cur[f'image_{jj}'] = None
         cur['img_type'] = f"['{ds}']"
-        assert convs[it + 1]['from'] == 'gpt'
-        cur['answer'] = convs[it + 1]['value']
+        # assert convs[it + 1]['from'] == 'gpt'
+        # cur['answer'] = convs[it + 1]['value']
+        cur['answer'] = ''
         cur['topic_difficulty'] = 'Medium'
         cur['question_type'] = 'short-answer'
         cur['subfield'] = f'{ds}'
 
-        base_id = ds + '_' + str(id)
+        # base_id = ds + '_' + str(id)
         # for_hash = base_id + ' ' + cur['question'] + ' ' + cur['answer']
         # suffix = hashlib.md5(str(for_hash).encode('utf-8')).hexdigest()
-        cur['id'] = base_id #+ '_' + suffix
+        cur['id'] = str(id) #+ '_' + suffix
 
         if _shots is not None:
             cur['shots'] = _shots

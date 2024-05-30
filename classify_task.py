@@ -194,7 +194,157 @@ def main():
 
     samples = []
     for sample in tqdm(dataset):
-        
+        # sample['question'] = f"Given an image, you are an expert to judge whether it is used for a counting task or not. Only answer Yes or No."
+        sample['question'] = f"""You are an AI designed to classify tasks based on whether they involve counting objects or not. Tasks that involve filling icons in blanks, choosing icons, or questioning and answering on a textbook should be treated as counting tasks. Reading a form or receipt, and answering a question from a document image, an infographic image, a table, or a web source should be treated as non-counting tasks. Below are some examples:
+
+            Example 1:
+            Image: A picture of apples
+            Question: "How many apples are there?"
+            Task: Counting
+
+            Example 2:
+            Image: A picture of a car
+            Question: "What color is the car?"
+            Task: Non-counting
+
+            Example 3:
+            Image: A picture of people
+            Question: "How many people are in the photo?"
+            Task: Counting
+
+            Example 4:
+            Image: A picture of a cat
+            Question: "Is the cat sleeping?"
+            Task: Non-counting
+
+            Example 5:
+            Image: A picture of a multiple-choice question in a textbook with icons to choose from
+            Question: "Choose the correct icon that matches the description."
+            Task: Counting
+
+            Example 6:
+            Image: A blank diagram where you need to fill in the icons
+            Question: "Fill in the blanks with the correct icons."
+            Task: Counting
+
+            Example 7:
+            Image: A page from a textbook with a question and answer section
+            Question: "Answer the questions on the textbook page."
+            Task: Counting
+
+            Example 8:
+            Image: A picture of a receipt
+            Question: "What is the total amount paid?"
+            Task: Non-counting
+
+            Example 9:
+            Image: A form
+            Question: "What is your name?"
+            Task: Non-counting
+
+            Example 10:
+            Image: A table
+            Question: "What is the average temperature for January?"
+            Task: Non-counting
+
+            Example 11:
+            Image: An infographic image with a question
+            Question: "What is the main idea conveyed in the infographic?"
+            Task: Non-counting
+
+            Example 12:
+            Web Source: An article from a website with a question
+            Question: "What is the author's main argument in the article?"
+            Task: Non-counting
+
+            Now, classify the following task:
+            """ + "\n" + sample['question']
+
+        # sample['question'] = f"""You are an AI designed to classify tasks based on whether they involve counting objects or not. Tasks that involve filling icons in blanks, choosing icons, or questioning and answering on a textbook should be treated as counting tasks. Reading a form or receipt, and answering a question from a document image, an infographic image, a table, or a web source should be treated as non-counting tasks. Below are some examples:
+            
+        #     Example 1:
+        #     Image: A picture of apples
+        #     Question: "How many apples are there?"
+        #     Task: Counting
+
+        #     Example 2:
+        #     Image: A picture of a car
+        #     Question: "What color is the car?"
+        #     Task: Non-counting
+
+        #     Example 3:
+        #     Image: A picture of people
+        #     Question: "How many people are in the photo?"
+        #     Task: Counting
+
+        #     Example 4:
+        #     Image: A picture of a cat
+        #     Question: "Is the cat sleeping?"
+        #     Task: Non-counting   
+
+        #     Example 5:
+        #     Image: A picture of a multiple-choice question in a textbook with icons to choose from
+        #     Question: "Choose the correct icon that matches the description."
+        #     Task: Counting
+
+        #     Example 6:
+        #     Image: A webpage with information about a company's employees
+        #     Question: "How many employees does Company Z have?"
+        #     Task: Counting
+
+        #     Example 7:
+        #     Image: A page from a document with a title
+        #     Question: "What is the title of the document?"
+        #     Task: Non-counting
+            
+        #     Example 8:
+        #     Image: A scanned form with fields for customer information
+        #     Question: "What is the name of the customer?"
+        #     Task: Non-counting
+
+        #     Example 9:
+        #     Image: A blank diagram where you need to fill in the icons
+        #     Question: "Fill in the blanks with the correct icons."
+        #     Task: Counting
+
+        #     Example 10:
+        #     Image: A page from a textbook with a question and answer section
+        #     Question: "Answer the questions on the textbook page."
+        #     Task: Non-counting
+
+        #     Example 11:
+        #     Image: An infographic displaying population data with a specific country highlighted
+        #     Question: "What is the population of Country X?"
+        #     Task: Counting
+            
+        #     Example 12:
+        #     Image: A page from a textbook with numbered examples
+        #     Question: "How many examples are provided in this chapter?"
+        #     Task: Counting
+
+        #     Example 13:
+        #     Image: A grocery receipt with a list of purchased items
+        #     Question: "What items were purchased in this transaction?"
+        #     Task: Non-counting
+            
+        #     Example 14:
+        #     Image: A webpage with information about a company's employee benefits
+        #     Question: "What are the company's policies on employee benefits?"
+        #     Task: Non-counting
+            
+        #     Example 15:
+        #     Image: An article from a website with numbered references
+        #     Question: "How many references are provided in the article?"
+        #     Task: Counting
+            
+        #     Example 16:
+        #     Image: A grocery receipt with a total amount section
+        #     Question: "What is the total amount paid?"
+        #     Task: Non-counting
+            
+        #     Now, classify the following task:
+        #     """ + "\n" + sample['question']
+
         sample = process_single_sample(sample)
         
 
