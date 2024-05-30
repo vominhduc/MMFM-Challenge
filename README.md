@@ -1,3 +1,100 @@
+## UPDATE
+We use a Mixture of Experts in our approach, consisting of two steps: finetuning LLaVA 1.5 on different tasks to create multiple experts and selecting appropriate experts by using a pre-trained LLaVA 1.5.
+
+Step 1: we observe that LLaVA 1.5 often fails on counting task. Therefore, we employ three experts in our approach including a counting expert, a non-counting expert, and a general expert. We then divide training datasets into three groups: (iconqa_fill, conqa_choose, textbookqa); 10 datasets excepting for (iconqa_fill, conqa_choose, textbookqa); and 10 datasets. Finally, we finetuned each expert on LLaVA 1.5 using LoRA.
+
+Step 2: we first selecting expert by feeding the image and corresponding question into a pre-trained LLaVA 1.5 using the in-context learning with prompt as follows:
+
+```
+You are an AI designed to classify tasks based on whether they involve counting objects or not. Tasks that involve filling icons in blanks, choosing icons, or questioning and answering on a textbook should be treated as counting tasks. Reading a form or receipt, and answering a question from a document image, an infographic image, a table, or a web source should be treated as non-counting tasks. Below are some examples:
+
+            Example 1:
+            Image: A picture of apples
+            Question: "How many apples are there?"
+            Task: Counting
+
+            Example 2:
+            Image: A picture of a car
+            Question: "What color is the car?"
+            Task: Non-counting
+
+            Example 3:
+            Image: A picture of people
+            Question: "How many people are in the photo?"
+            Task: Counting
+
+            Example 4:
+            Image: A picture of a cat
+            Question: "Is the cat sleeping?"
+            Task: Non-counting
+
+            Example 5:
+            Image: A picture of a multiple-choice question in a textbook with icons to choose from
+            Question: "Choose the correct icon that matches the description."
+            Task: Counting
+
+            Example 6:
+            Image: A blank diagram where you need to fill in the icons
+            Question: "Fill in the blanks with the correct icons."
+            Task: Counting
+
+            Example 7:
+            Image: A page from a textbook with a question and answer section
+            Question: "Answer the questions on the textbook page."
+            Task: Counting
+
+            Example 8:
+            Image: A picture of a receipt
+            Question: "What is the total amount paid?"
+            Task: Non-counting
+
+            Example 9:
+            Image: A form
+            Question: "What is your name?"
+            Task: Non-counting
+
+            Example 10:
+            Image: A table
+            Question: "What is the average temperature for January?"
+            Task: Non-counting
+
+            Example 11:
+            Image: An infographic image with a question
+            Question: "What is the main idea conveyed in the infographic?"
+            Task: Non-counting
+
+            Example 12:
+            Web Source: An article from a website with a question
+            Question: "What is the author's main argument in the article?"
+            Task: Non-counting
+
+            Now, classify the following task:
+```
+
+Then, depending on the selection, we use the corresponding expert to generate the answer. We note that due to the limitations of computing resources, we generate the answers using all experts first, and set a simple rule to merge the results using the MoE:
+
+- If the task is counting: we will select the answer from the counting expert.
+
+- If the task is not counting (in most cases, LLaVA also outputs the answer): we select the answer based on the consensus among 3 experts (at least 2/3 experts have the same answers). If no consensus, we will randomly choose between the non-counting expert and  the general expert since the counting expert is tailored only for the counting task.
+
+###Train experts
+
+We follow the authors to fine-tune LLaVA 1.5 13B instruction-tuned with LLAVA instruction-tuning data for each expert.
+
+###Evaluation
+
+run  `bash evaluate_phase_1_4_datasets.sh `  to generate answers for 4 datasets in phase 1
+
+run  `bash evaluate_phase_1_4_datasets.sh `  to generate answers for 6 datasets in phase 1
+
+run  `bash evaluate_phase_2.sh  ` to generate answers for datasets in phase 2
+
+run  `python merge_json.py `  to merge all answer json files into one file following the format of the challenge
+
+*Note: Please change PATH
+
+
+
 ## Overview
 [MMFM Challenge](https://sites.google.com/view/2nd-mmfm-workshop/challenge?authuser=0).
 Multimodal Foundation Models (MMFMs) have shown unprecedented performance in many computer vision tasks. However, on some very specific tasks like document understanding, their performance is still underwhelming. In order to evaluate and improve these strong multi-modal models for the task of document image understanding, we harness a large amount of publicly available and privately gathered data (listed in the image above) and propose a challenge. In the following, we list all the important details related to the challenge. Our challenge is running in two separate phases. For the first phase, we have released a training set consisting of publicly available data and for the second phase, an alien test set will be released soon.
